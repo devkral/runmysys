@@ -176,7 +176,7 @@ vmwaremachinetypes={ "arm" : "arm", "x86_64" : "x86_64"}
 vmwareoptions=" -cpu host -smp 4 -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
 def execVMware():
 	vmwareoptions2=""
-	if not ("hdapath" in config_parsed or "cdrom" in config_parsed):
+	if not ("disk1" in config_parsed or "cdrom" in config_parsed):
 		print("Error: no valid boot disk found")
 		exit(1)
 	
