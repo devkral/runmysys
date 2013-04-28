@@ -1,0 +1,6 @@
+
+integrate in udev or systemd so usbsticks could be autostarted
+implement device boundary detection
+
+#implement auto snapshot
+
