@@ -1,13 +1,8 @@
-KERNEL!="sd*", ATTR{removable}!="1", GOTO="media_by_label_only_auto_mount_end"
+KERNEL!="sd*", ATTR{removable}!="1", GOTO="media_by_label_only_auto_exec_end"
 
 # Import FS infos
 IMPORT{program}="/sbin/blkid -o udev -p %N"
-ENV{ID_FS_LABEL}=="", GOTO="media_by_label_only_auto_mount_end"
-
-# Global mount options
-ACTION=="add", ENV{mount_options}="relatime"
-# Filesystem-specific mount options
-ACTION=="add", ENV{ID_FS_TYPE}=="vfat|ntfs", ENV{mount_options}="$env{mount_options},utf8,gid=100,umask=002"
+ENV{ID_FS_LABEL}=="", GOTO="media_by_label_only_auto_exec_end"
 
 #if mounted execute this
 ACTION=="add", RUN+="/usr/bin/lamysysstart.py start /media/$env{ID_FS_LABEL}/lamysys.ini"
@@ -15,4 +10,4 @@ ACTION=="add", RUN+="/usr/bin/lamysysstart.py start /media/$env{ID_FS_LABEL}/lam
 ACTION=="remove", RUN+="/usr/bin/lamysysstart.py stop /media/$env{ID_FS_LABEL}/lamysys.ini"
 
 # Exit
-LABEL="media_by_label_only_auto_mount_end"
+LABEL="media_by_label_only_auto_exec_end"
