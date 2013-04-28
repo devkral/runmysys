@@ -63,6 +63,7 @@ if len(sys.argv)>3:
 
 if os.path.exists(configpath)==False:
 	exit(2)
+os.chdir(os.path.dirname(configpath))
 
 def parseconfiginit():
 	tempparse={}
@@ -91,11 +92,12 @@ def sanitizeinput(stringin):
 
 
 def parsePath(optionname):
-	temp=os.path.abspath(config_parsed[optionname])
+	temp=os.path.normpath(config_parsed[optionname])
 	if os.path.exists(temp)==True:
 		return temp
 	else:
-		raise ("File: "+str(config_parsed[optionname])+" doesn't exist")
+		print ("File: "+str(config_parsed[optionname])+" ("+os.path.normpath(config_parsed[optionname])+") doesn't exist")
+		exit(1)
 	
 def execute_before():
 	if allow_scriptlet==True:
