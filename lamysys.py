@@ -149,9 +149,12 @@ def createPID():
 #conventions: add a machinetype named after the emulator
 
 qemupath="/usr/bin/qemu-system"
-qemufiletypes=["raw","qcow","qcow2" "qemu"]
-qemumachinetypes={ "arm" : "arm", "x86_64" : "x86_64"}
-qemuoptions=" -cpu host -smp 4 -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
+qemufiletypes=["vmdk", "vdi","raw", "qed", "qcow2", "qcow", "dmg", "cow", "qemu"]
+#of course this aren't all supported architectures but the most common and most supported among desktops, expand later
+qemumachinetypes={ "arm" : "arm", "i686" :  "i386", "x86_64" : "x86_64", "mips" :  "mips", "mips64" :  "mips64"}
+
+}
+qemuoptions=" -cpu host -smp 4 -usb -soundhw all -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
 def execQemu():
 	qemuoptions2=""
 	if not ("disk1" in config_parsed or "cdrom" in config_parsed):
@@ -171,56 +174,27 @@ def execQemu():
 		qemuoptions2+="-hdd "+hostdrive+" "
 	return qemupath+"-"+qemumachinetypes[config_parsed["system_environment"]].strip()+" "+qemuoptions2.strip()+" "+qemuoptions.strip()+" "+sanitizeinput(useropts.strip())
 	
-
-vmwarepath="/usr/bin/qemu-system"
-vmwarefiletypes=["raw","qcow","qcow2" "vmware"]
-vmwaremachinetypes={ "arm" : "arm", "x86_64" : "x86_64"}
-vmwareoptions=" -cpu host -smp 4 -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
-def execVMware():
-	vmwareoptions2=""
-	if not ("disk1" in config_parsed or "cdrom" in config_parsed):
-		print("Error: no valid boot disk found")
-		exit(1)
 	
-	print("VMware Not implemented yet")
-	exit(1)
-	if "disk1" in config_parsed and config_parsed["disk1"]!='':
-			qemuoptions2+="-hda "+parsePath("disk1")+" "
-	if "disk2" in config_parsed and config_parsed["disk2"]!='':
-			qemuoptions2+="-hdb "+parsePath("disk2")+" "
-	if "cdrom" in config_parsed and config_parsed["cdrom"]!='':
-		qemuoptions2+="-cdrom "+parsePath("cdrom")+" "
-	else:
-		if "disk3" in config_parsed and config_parsed["disk3"]!='':
-			qemuoptions2+="-hdc "+parsePath("disk3")+" "
-	if hostdrive!="":
-		qemuoptions2+="-hdd "+hostdrive+" "
-	return vmwarepath+"-"+qemumachinetypes[config_parsed["system_environment"]].strip()+" "+vmwareoptions2.strip()+" "+vmwareoptions.strip()+" "+sanitizeinput(useropts.strip())
-	
-virtualboxpath="/usr/bin/qemu-system"
-virtualboxfiletypes=["raw","qcow","qcow2" "virtualbox"]
-virtualboxmachinetypes={ "arm" : "arm", "x86_64" : "x86_64"}
-virtualboxoptions=" -cpu host -smp 4 -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
+virtualboxpath="/usr/bin/VBoxManage"
+virtualboxfiletypes=["vmdk", "vdi","virtualbox"]
+virtualboxmachinetypes={ "arm" : "arm", "i686" :  "i386", "x86_64" : "x86_64", "mips" :  "mips", "mips64" :  "mips64"}
+virtualboxoptions=" "
 def execVirtualBox():
-	vmwareoptions2=""
-	if not ("disk1" in config_parsed or "cdrom" in config_parsed):
-		print("Error: no valid boot disk found")
-		exit(1)
-	
-	print("VirtualBox Not implemented yet")
+	virtualboxoptions2=""
+	print("VirtualBox: not implemented yet, maybe never except I find a hack to execute an extern file without importing it but very low priority 'cause I dislike fancy stuffed, walled gardens")
 	exit(1)
 	if "disk1" in config_parsed and config_parsed["disk1"]!='':
-			qemuoptions2+="-hda "+parsePath("disk1")+" "
+			virtualboxoptions2+="-hda "+parsePath("disk1")+" "
 	if "disk2" in config_parsed and config_parsed["disk2"]!='':
-			qemuoptions2+="-hdb "+parsePath("disk2")+" "
+			virtualboxoptions2+="-hdb "+parsePath("disk2")+" "
 	if "cdrom" in config_parsed and config_parsed["cdrom"]!='':
-		qemuoptions2+="-cdrom "+parsePath("cdrom")+" "
+		virtualboxoptions2+="-cdrom "+parsePath("cdrom")+" "
 	else:
 		if "disk3" in config_parsed and config_parsed["disk3"]!='':
-			qemuoptions2+="-hdc "+parsePath("disk3")+" "
+			virtualboxoptions2+="-hdc "+parsePath("disk3")+" "
 	if hostdrive!="":
-		qemuoptions2+="-hdd "+hostdrive+" "
-	return vmwarepath+"-"+qemumachinetypes[config_parsed["system_environment"]].strip()+" "+vmwareoptions2.strip()+" "+vmwareoptions.strip()+" "+sanitizeinput(useropts.strip())
+		virtualboxoptions2+="-hdd "+hostdrive+" "
+	return virtualboxpath+"-"+qemumachinetypes[config_parsed["system_environment"]].strip()+" "+virtualboxoptions2.strip()+" "+virtualboxoptions.strip()+" "+sanitizeinput(useropts.strip())
 	
 
 ### Emulator SECTION  end ###
@@ -233,8 +207,8 @@ def parseVirt():
 	
 	if config_parsed["file_format"] in qemufiletypes:
 		temp=execQemu()
-	elif config_parsed["file_format"] in vmwarefiletypes:
-		temp=execVMware()
+	elif config_parsed["file_format"] in virtualboxfiletypes:
+		temp=execVirtualBox()
 
 	os.system(temp)
 
