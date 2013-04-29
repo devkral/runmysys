@@ -153,7 +153,6 @@ qemufiletypes=["vmdk", "vdi","raw", "qed", "qcow2", "qcow", "dmg", "cow", "qemu"
 #of course this aren't all supported architectures but the most common and most supported among desktops, expand later
 qemumachinetypes={ "arm" : "arm", "i686" :  "i386", "x86_64" : "x86_64", "mips" :  "mips", "mips64" :  "mips64"}
 
-}
 qemuoptions=" -cpu host -smp 4 -usb -soundhw all -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
 def execQemu():
 	qemuoptions2=""
