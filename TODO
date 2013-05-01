@@ -1,5 +1,8 @@
+find a better mount solution than udev
+add more autostart routines
+make udev working (either DISPLAY or timelimit is the problem)
 
-integrate in udev or systemd so usbsticks could be autostarted
+drop privileges
 implement device boundary detection
 
 #implement auto snapshot

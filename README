@@ -18,6 +18,7 @@ INSTALL:
 install -g root -o root -m 755 ./lamysys.py /usr/bin
 
 Now decide which method you want to use (use just one!)
-udev:
--copy 70-lamysys-start.rules into /etc/udev/rules.d (or in /usr/lib/udev/rules.d)
-install -g root -o root -m 755 ./launchmethods/70-lamysys-start.rules /etc/udev/rules.d
+udev after automount:
+-copy 11-lamysys-start-after-automount.rules into /etc/udev/rules.d (or in /usr/lib/udev/rules.d)
+install -g root -o root -m 755 ./launchmethods/11-lamysys-start.rules /etc/udev/rules.d
+install -g root -o root -m 755 ./launchmethods/lamysysudevhelper.sh /usr/bin

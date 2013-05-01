@@ -26,6 +26,7 @@
 import sys
 import os
 import atexit
+import gc
 
 ## imports-end ##
 ### options ###
@@ -76,6 +77,7 @@ def parseconfiginit():
 			tempparse[tempchunk2[0].strip()]=tempchunk2[2].strip().strip('"')
 		tempchunk=config_filehandle.readline()
 	config_filehandle.close()
+	gc.collect()
 	return tempparse
 		
 config_parsed=parseconfiginit()
@@ -139,6 +141,7 @@ def createPID():
 		temppid_handle.write(str(os.getpid()))
 		temppid_handle.close()
 	atexit.register(destroyPID)
+	gc.collect()
 	
 	
 
@@ -153,7 +156,7 @@ qemufiletypes=["vmdk", "vdi","raw", "qed", "qcow2", "qcow", "dmg", "cow", "qemu"
 #of course this aren't all supported architectures but the most common and most supported among desktops, expand later
 qemumachinetypes={ "arm" : "arm", "i686" :  "i386", "x86_64" : "x86_64", "mips" :  "mips", "mips64" :  "mips64"}
 
-qemuoptions=" -cpu host -smp 4 -usb -soundhw all -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
+qemuoptions=" -cpu host -smp 4 -usb -soundhw sb16 -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
 def execQemu():
 	qemuoptions2=""
 	if not ("disk1" in config_parsed or "cdrom" in config_parsed):
