@@ -17,4 +17,4 @@ install -g root -o root -m 755 ./runmysys.py /usr/bin
 
 Now decide which method you want to use (use just one!)
 autostart: 
-run ./install install 
+run ./install install autostart <installrootdir>
