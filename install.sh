@@ -8,8 +8,8 @@
 # arg5: (opt): username
 
 userid=921 #"$(id -u "$username")"
-username="lamysys"
-filedir="/usr/share/lamysys"
+username="runmysys"
+filedir="/usr/share/runmysys"
 
 help()
 {
@@ -52,9 +52,9 @@ if [ "$install" = "useradd" ]; then
 elif [ "$install" = "userdel" ]; then
   userdel "$username"
 elif [ "$install" = "install" ]; then
-  install -D -m755 "$projdir/lamysys.py"  "$rootdir/usr/bin/lamysys.py"
+  install -D -m755 "$projdir/runmysys.py"  "$rootdir/usr/bin/runmysys.py"
 elif [ "$install" = "uninstall" ]; then
-  rm "$rootdir/usr/bin/lamysys.py"
+  rm "$rootdir/usr/bin/runmysys.py"
 fi
 
 
@@ -63,13 +63,13 @@ fi
 udevinstall()
 {
   if [ "$install" = "install" ]; then
-    install -D -m755 "$projdir/launchmethods/lamysysudevhelper.sh" "$rootdir$filedir/lamysysudevhelper.sh"
-    sed -i -e "s|/usr/bin/lamysys.py|$destrootdir/usr/bin/lamysys.py|g" "$rootdir$filedir/lamysysudevhelper.sh"
-	install -D -m755 "$projdir/launchmethods/11-lamysys-start.rules"  "$rootdir/etc/udev/rules.d/11-lamysys-start.rules"
-    sed -i -e "s|uid=921|uid=$userid|g" -e "s|/usr/share/lamysys/|$filedir|g" "$rootdir/etc/udev/rules.d/11-lamysys-start.rules"
+    install -D -m755 "$projdir/launchmethods/runmysysudevhelper.sh" "$rootdir$filedir/runmysysudevhelper.sh"
+    sed -i -e "s|/usr/bin/runmysys.py|$destrootdir/usr/bin/runmysys.py|g" "$rootdir$filedir/runmysysudevhelper.sh"
+	install -D -m755 "$projdir/launchmethods/11-runmysys-start.rules"  "$rootdir/etc/udev/rules.d/11-runmysys-start.rules"
+    sed -i -e "s|uid=921|uid=$userid|g" -e "s|/usr/share/runmysys/|$filedir|g" "$rootdir/etc/udev/rules.d/11-runmysys-start.rules"
   elif [ "$install" = "uninstall" ]; then
     rm -r "$rootdir$filedir"
-    rm "$rootdir/etc/udev/rules.d/11-lamysys-start.rules"
+    rm "$rootdir/etc/udev/rules.d/11-runmysys-start.rules"
   fi
 	
 	
@@ -79,12 +79,12 @@ autostart()
 {
   if [ "$install" = "install" ]; then
     install -D -m755 "$projdir/launchmethods/lookformounted.sh" "$rootdir$filedir/lookformounted.sh"
-    sed -i -e "s|/usr/bin/lamysys.py|$destrootdir/usr/bin/lamysys.py|g" "$rootdir$filedir/lookformounted.sh"
-    install -D -m755 "$projdir/launchmethods/lamysysautostart.desktop"  "$rootdir/etc/xdg/autostart/lamysysautostart.desktop"
-    sed -i -e "s|/usr/share/lamysys/|$filedir|g" "$rootdir/etc/xdg/autostart/lamysysautostart.desktop"
+    sed -i -e "s|/usr/bin/runmysys.py|$destrootdir/usr/bin/runmysys.py|g" "$rootdir$filedir/lookformounted.sh"
+    install -D -m755 "$projdir/launchmethods/runmysysautostart.desktop"  "$rootdir/etc/xdg/autostart/runmysysautostart.desktop"
+    sed -i -e "s|/usr/share/runmysys/|$filedir|g" "$rootdir/etc/xdg/autostart/runmysysautostart.desktop"
   elif [ "$install" = "uninstall" ]; then
     rm -r "$rootdir$filedir"
-    rm "$rootdir/etc/xdg/autostart/lamysysautostart.desktop"
+    rm "$rootdir/etc/xdg/autostart/runmysysautostart.desktop"
   fi
 }
 

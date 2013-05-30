@@ -14,9 +14,9 @@ ACTION=="add", ENV{mount_options}="relatime,uid=921,umask=002"
 ACTION=="add", ENV{ID_FS_TYPE}=="vfat|ntfs", ENV{mount_options}="%E{mount_options},utf8,"
 
 
-ACTION=="add", ENV{dir_name}!="", RUN+="/bin/mkdir -p '/run/media/lamysys/%E{dir_name}'", RUN+="/bin/mount -o %E{mount_options} /dev/%k '/run/media/lamysys/%E{dir_name}'"
-ACTION=="add", ENV{dir_name}!="", RUN+="/usr/bin/env bash /usr/share/lamysys/lamysysudevhelper.sh start '/run/media/lamysys/%E{dir_name}'"
+ACTION=="add", ENV{dir_name}!="", RUN+="/bin/mkdir -p '/run/media/runmysys/%E{dir_name}'", RUN+="/bin/mount -o %E{mount_options} /dev/%k '/run/media/runmysys/%E{dir_name}'"
+ACTION=="add", ENV{dir_name}!="", RUN+="/usr/bin/env bash /usr/share/runmysys/runmysysudevhelper.sh start '/run/media/runmysys/%E{dir_name}'"
 # if unmounted execute this
-ACTION=="remove", ENV{dir_name}!="", RUN+="/usr/bin/env bash /usr/bin/lamysysudevhelper.sh stop '/run/media/lamysys/%E{dir_name}'"
+ACTION=="remove", ENV{dir_name}!="", RUN+="/usr/bin/env bash /usr/bin/runmysysudevhelper.sh stop '/run/media/runmysys/%E{dir_name}'"
 # Exit
 LABEL="media_by_label_only_auto_exec_end"

@@ -15,10 +15,10 @@ Also the autolaunch mechanic isn't ready (not tested) and windows wasn't tested.
 INSTALL:
 -Copy the python file into /usr/bin (or whatever you like)
 -if python file not /usr/bin adjust the paths in the startfiles in the launchmethods directory
-install -g root -o root -m 755 ./lamysys.py /usr/bin
+install -g root -o root -m 755 ./runmysys.py /usr/bin
 
 Now decide which method you want to use (use just one!)
 udev after automount:
--copy 11-lamysys-start-after-automount.rules into /etc/udev/rules.d (or in /usr/lib/udev/rules.d)
-install -g root -o root -m 755 ./launchmethods/11-lamysys-start.rules /etc/udev/rules.d
-install -g root -o root -m 755 ./launchmethods/lamysysudevhelper.sh /usr/bin
+-copy 11-runmysys-start-after-automount.rules into /etc/udev/rules.d (or in /usr/lib/udev/rules.d)
+install -g root -o root -m 755 ./launchmethods/11-runmysys-start.rules /etc/udev/rules.d
+install -g root -o root -m 755 ./launchmethods/runmysysudevhelper.sh /usr/bin

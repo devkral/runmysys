@@ -55,7 +55,7 @@ if len(sys.argv)<3:
 
 action=sys.argv[1]
 configpath=os.path.abspath(sys.argv[2])
-pidfilepath=os.path.dirname(configpath)+os.sep+"lamysys.pid"
+pidfilepath=os.path.dirname(configpath)+os.sep+"runmysys.pid"
 
 useropts=""
 if len(sys.argv)>3:

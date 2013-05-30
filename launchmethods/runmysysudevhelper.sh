@@ -7,7 +7,7 @@ if [ "$#" != "2" ]; then
 fi
 
 
-DISPLAY=:0 /usr/bin/lamysys.py "$1" "$2/lamysys.ini"  #doesn't work because I don't find anything about this
+DISPLAY=:0 /usr/bin/runmysys.py "$1" "$2/runmysys.ini"  #doesn't work because I don't find anything about this
 
 /bin/umount "$2" 2> /dev/null
 /bin/rmdir "$2" 2> /dev/null

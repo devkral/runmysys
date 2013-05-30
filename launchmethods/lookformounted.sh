@@ -18,14 +18,14 @@ do
         for dirobject in $tempwalker
         do
           if [ -d "$mountlookdir/${dirobject}" ]; then
-            /usr/bin/lamysys.py "start" "$mountlookdir/${dirobject}/lamysys.ini"
+            /usr/bin/runmysys.py "start" "$mountlookdir/${dirobject}/runmysys.ini"
           fi
         done
       else
         for dirobject in $alreadywalked
         do
           if ! echo "$countwalked" | grep -n "$dirobject" && [ -d "$mountlookdir/${dirobject}" ]; then
-            /usr/bin/lamysys.py "stop" "$mountlookdir/${dirobject}/lamysys.ini"
+            /usr/bin/runmysys.py "stop" "$mountlookdir/${dirobject}/runmysys.ini"
           fi
         done
       fi
