@@ -107,7 +107,7 @@ autostart()
 
 
 case "$method" in
-"udev")udevinstall;;
+"udev")udevinstall;; #doesn't work !!!!!!
 "autostart")autostart;;
 
 *) help;;
