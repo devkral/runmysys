@@ -62,9 +62,13 @@ if len(sys.argv)>3:
 	useropts=sys.argv[3:]
 
 
-if os.path.exists(configpath)==False:
+if os.path.isfile(configpath)==False:
 	exit(2)
 os.chdir(os.path.dirname(configpath))
+
+
+confdevice=os.stat(configpath).st_dev
+
 
 def parseconfiginit():
 	tempparse={}
@@ -96,19 +100,24 @@ def sanitizeinput(stringin):
 def parsePath(optionname):
 	temp=os.path.normpath(config_parsed[optionname])
 	if os.path.exists(temp)==True:
-		return temp
+		if confdevice==os.stat(temp).st_dev:
+			return temp
+		else:
+			print("SECURITY ALERT: Configfile tried to cross the device border (start a vmfile on the host computer)")
+			exit(3)
+			
 	else:
 		print ("File: "+str(config_parsed[optionname])+" ("+os.path.normpath(config_parsed[optionname])+") doesn't exist")
 		exit(1)
 	
 def execute_before():
 	if allow_scriptlet==True:
-		os.system(os.path.abspath(parseconfig("execbefore")))
+		os.system(parseconfig("execbefore"))
 	
 
-def execute_after():	
-	if allow_scriptlet==True:
-		os.system(os.path.abspath(parseconfig("execafter")))
+def execute_after():
+	if allow_scriptlet==True and os.path.isfile(configpath)==True:
+		os.system(parseconfig("execafter"))
 		
 
 ### help-routines SECTION end ###
@@ -217,15 +226,16 @@ def parseVirt():
 if action=="start":
 	createPID()
 	execute_before()
-	parseVirt()
-	execute_after()
+	parseVirt() #atexit handler active so calling destroyPID isn't needed
+	exit(0)
 	
 elif action=="stop":
 	if os.path.exists(pidfilepath):
 		temptpidfile_handle=open(pidfilepath,"rt")
 		killpid=temptpidfile_handle.readline().strip()
 		temptpidfile_handle.close()
-		os.system("pkill -TERM -P "+killpid)
+		os.system("pkill -TERM -P "+killpid)  #atexit handler active so calling destroyPID isn't needed
+		exit(0)
 	
 else:
 	usage()

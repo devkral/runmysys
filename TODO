@@ -1,9 +1,7 @@
-find a better mount solution than udev
 add more autostart routines
-make udev working (either DISPLAY or timelimit is the problem)
+fix udev autostart
 
-drop privileges
-implement device boundary detection
+drop privileges (not neccessary if started as user)
 
 #implement auto snapshot
-
+#autodestroy of vm (after removing device) doesn't work
