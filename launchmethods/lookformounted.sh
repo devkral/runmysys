@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-mountlookdir="/run/media/$(id -u)"
+mountlookdir="/run/media/$(whoami)" #$(id -u)"
 
 tempwalker=""
 countwalker="0"
@@ -10,25 +10,27 @@ countwalked="0"
 for ((; ;))
 do
   if [ -d "$mountlookdir" ]; then
-    tempwalker="$(ls -d "$mountlookdir" | grep )"
+    tempwalker="$(ls "$mountlookdir")"
     countwalker="$(echo "$tempwalker" | wc -w)"
     countwalked="$(echo "$alreadywalked" | wc -w)"
     if [ "$countwalked" -ne "$countwalker"  ]; then
       if [ "$countwalked" -lt "$countwalker" ]; then
         for dirobject in $tempwalker
         do
-          /usr/bin/lamysys.py "start" "$mountlookdir/${dirobject}lamysys.ini"
+          if [ -d "$mountlookdir/${dirobject}" ]; then
+            /usr/bin/lamysys.py "start" "$mountlookdir/${dirobject}/lamysys.ini"
+          fi
         done
       else
         for dirobject in $alreadywalked
         do
-          if ! echo "$countwalked" | grep -n "$dirobject"; then
-            /usr/bin/lamysys.py "stop" "$mountlookdir/${dirobject}lamysys.ini"
+          if ! echo "$countwalked" | grep -n "$dirobject" && [ -d "$mountlookdir/${dirobject}" ]; then
+            /usr/bin/lamysys.py "stop" "$mountlookdir/${dirobject}/lamysys.ini"
           fi
         done
       fi
+      alreadywalked="$tempwalker"
     fi
-    alreadywalked="$tempwalker"
   fi
   sleep 4
 done

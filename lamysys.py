@@ -218,6 +218,7 @@ if action=="start":
 	createPID()
 	execute_before()
 	parseVirt()
+	execute_after()
 	
 elif action=="stop":
 	if os.path.exists(pidfilepath):

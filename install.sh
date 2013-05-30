@@ -4,8 +4,8 @@
 # arg1: install/remove
 # arg2: method
 # arg3: (rootdir)
-# arg5 (opt): usrdir DON'T USE!!!!!!
-# arg4 (opt): username
+# arg4: (effektive rootdir)
+# arg5: (opt): username
 
 userid=921 #"$(id -u "$username")"
 username="lamysys"
@@ -24,20 +24,27 @@ fi
 
 projdir="$(dirname "$0")"
 
-
-
 install="$1"
 method="$2"
-rootdir="$(realpath($3))"
-if [ "$rootdir" = "/" ]; then
-  rootdir=""
+
+rootdir=""
+if [ "$3" != "" ]; then
+  rootdir="$(realpath "$3")"
+  if [ "$rootdir" = "/" ]; then
+    rootdir=""
+  fi
 fi
 
+destrootdir=""
 if [ "$4" != "" ]; then
-  username="$4"
+  destrootdir="$(realpath "$4")"
+  if [ "$destrootdir" = "/" ]; then
+    destrootdir=""
+  fi
 fi
+
 if [ "$5" != "" ]; then
-  filedir="$5"
+  username="$5"
 fi
 
 if [ "$install" = "useradd" ]; then
@@ -57,8 +64,9 @@ udevinstall()
 {
   if [ "$install" = "install" ]; then
     install -D -m755 "$projdir/launchmethods/lamysysudevhelper.sh" "$rootdir$filedir/lamysysudevhelper.sh"
+    sed -i -e "s|/usr/bin/lamysys.py|$destrootdir/usr/bin/lamysys.py|g" "$rootdir$filedir/lamysysudevhelper.sh"
 	install -D -m755 "$projdir/launchmethods/11-lamysys-start.rules"  "$rootdir/etc/udev/rules.d/11-lamysys-start.rules"
-    sed -i -e "s|uid=921|uid=$userid|" -e "s|/usr/share/lamysys/|$filedir|" "$rootdir/etc/udev/rules.d/11-lamysys-start.rules"
+    sed -i -e "s|uid=921|uid=$userid|g" -e "s|/usr/share/lamysys/|$filedir|g" "$rootdir/etc/udev/rules.d/11-lamysys-start.rules"
   elif [ "$install" = "uninstall" ]; then
     rm -r "$rootdir$filedir"
     rm "$rootdir/etc/udev/rules.d/11-lamysys-start.rules"
@@ -70,9 +78,10 @@ udevinstall()
 autostart()
 {
   if [ "$install" = "install" ]; then
-    install -D -m755 "$projdir/launchmethods/lookformount.sh" "$rootdir$filedir/lookformount.sh"
+    install -D -m755 "$projdir/launchmethods/lookformounted.sh" "$rootdir$filedir/lookformounted.sh"
+    sed -i -e "s|/usr/bin/lamysys.py|$destrootdir/usr/bin/lamysys.py|g" "$rootdir$filedir/lookformounted.sh"
     install -D -m755 "$projdir/launchmethods/lamysysautostart.desktop"  "$rootdir/etc/xdg/autostart/lamysysautostart.desktop"
-    sed -i -e "s|/usr/share/lamysys/|$filedir|" "$rootdir/etc/xdg/autostart/lamysysautostart.desktop"
+    sed -i -e "s|/usr/share/lamysys/|$filedir|g" "$rootdir/etc/xdg/autostart/lamysysautostart.desktop"
   elif [ "$install" = "uninstall" ]; then
     rm -r "$rootdir$filedir"
     rm "$rootdir/etc/xdg/autostart/lamysysautostart.desktop"
