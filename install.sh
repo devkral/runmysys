@@ -3,8 +3,8 @@
 
 # arg1: install/remove
 # arg2: method
-# arg3: (rootdir)
-# arg4: (effektive rootdir)
+# arg3: (install rootdir)
+# arg4: (program rootdir)
 # arg5: (opt): username
 
 userid=921 #"$(id -u "$username")"
@@ -13,7 +13,7 @@ filedir="/usr/share/runmysys"
 
 help()
 {
-  echo "$0 install/remove method (rootdir)"
+  echo "$0 install/remove method (install rootdir) (program rootdir)"
   exit 1
 }
 

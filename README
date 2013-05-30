@@ -1,15 +1,13 @@
 What's for?
 
-Imagine you could use a computer, plug in a usbdrive or something similar and you have your own system and data.
-Everything in a VM. If your system is arm or x86 wouldn't matter anymore.
-This is the goal of this project.
+The goal is: you plug in an usb drive or whatever into a pc and have your own working environment and data 
 
 
 
 Status:
 
-Ready to use for qemu. For other virtualization solutions you have to write the launch code yourself.
-Also the autolaunch mechanic isn't ready (not tested) and windows wasn't tested.
+Ready to use for qemu. Other VMs aren't supported yet.
+Also windows wasn't tested (and there is no autolauncher for it).
 
 
 INSTALL:
@@ -18,7 +16,5 @@ INSTALL:
 install -g root -o root -m 755 ./runmysys.py /usr/bin
 
 Now decide which method you want to use (use just one!)
-udev after automount:
--copy 11-runmysys-start-after-automount.rules into /etc/udev/rules.d (or in /usr/lib/udev/rules.d)
-install -g root -o root -m 755 ./launchmethods/11-runmysys-start.rules /etc/udev/rules.d
-install -g root -o root -m 755 ./launchmethods/runmysysudevhelper.sh /usr/bin
+autostart: 
+run ./install install 
