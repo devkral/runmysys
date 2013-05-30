@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Name=Lamysys Autostart Daemon
+Exec=/usr/share/lamysys/lookformounted.sh
+Comment=Runs background check if a medium with lamysys config is available
+Icon=gtk-save
+Terminal=false
+Type=Application
