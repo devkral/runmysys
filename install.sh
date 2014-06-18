@@ -145,7 +145,7 @@ userautostartshell()
     install -D -m755 "$projdir/launchmethods/lookformounted.sh" "$rootdir$filedir/lookformounted.sh"
     sed -i -e "s|/usr/bin/runmysys.py|$destrootdir/usr/bin/runmysys.py|g" "$rootdir$filedir/lookformounted.sh"
     createuser "bash"
-    cat "$rootdir$filedir/lookformounted.sh" >> "$rootdir/home/${username}/.bashrc"
+    cat "exec $rootdir$filedir/lookformounted.sh" >> "$rootdir/home/${username}/.xinitrc"
   elif [ "$install" = "uninstall" ]; then
     rm -r "$rootdir$filedir"
   fi
