@@ -11,7 +11,7 @@ ENV{ID_FS_LABEL}=="", ENV{ID_PART_ENTRY_UUID}=="", ENV{dir_name}="%k"
 
 #mount
 ACTION=="add", ENV{mount_options}="relatime,uid=921,umask=002"
-ACTION=="add", ENV{ID_FS_TYPE}=="vfat|ntfs", ENV{mount_options}="%E{mount_options},utf8,"
+ACTION=="add", ENV{ID_FS_TYPE}=="vfat|ntfs", ENV{mount_options}="%E{mount_options},utf8"
 
 
 ACTION=="add", ENV{dir_name}!="", RUN+="/bin/mkdir -p '/run/media/runmysys/%E{dir_name}'", RUN+="/bin/mount -o %E{mount_options} /dev/%k '/run/media/runmysys/%E{dir_name}'"

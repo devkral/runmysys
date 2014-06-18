@@ -5,3 +5,4 @@ drop privileges (not neccessary if started as user)
 
 #implement auto snapshot
 #autodestroy of vm (after removing device) doesn't work
+# solution signal KILL

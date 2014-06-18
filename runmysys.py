@@ -55,19 +55,25 @@ if len(sys.argv)<3:
 
 action=sys.argv[1]
 configpath=os.path.abspath(sys.argv[2])
-pidfilepath=os.path.dirname(configpath)+os.sep+"runmysys.pid"
+if os.name=='windows':
+	pidfilefolder=os.path.expanduser("~user")+"\.runmysys"
+else:
+	pidfilefolder=os.path.expanduser("~")+"/.runmysys"
+
+try:
+	os.makedirs(pidfilefolder,0o770,True)
+except OSError:
+	print("Debug: wrong permissions")
+	os.chmod(pidfilefolder,0o770) #stat.S_IRWXU|stat.S_IRWXG)
+	
+pidfilepath=pidfilefolder+os.sep+os.path.basename(os.path.dirname(configpath))+".pid"
 
 useropts=""
 if len(sys.argv)>3:
 	useropts=sys.argv[3:]
 
 
-if os.path.isfile(configpath)==False:
-	exit(2)
-os.chdir(os.path.dirname(configpath))
 
-
-confdevice=os.stat(configpath).st_dev
 
 
 def parseconfiginit():
@@ -84,8 +90,11 @@ def parseconfiginit():
 	gc.collect()
 	return tempparse
 		
-config_parsed=parseconfiginit()
-
+if os.path.isfile(configpath)==True:
+	confdevice=os.stat(configpath).st_dev
+	config_parsed=parseconfiginit()
+elif action!="stop":
+	exit(2)
 
 ### help-routines SECTION ###
 
@@ -165,24 +174,24 @@ qemufiletypes=["vmdk", "vdi","raw", "qed", "qcow2", "qcow", "dmg", "cow", "qemu"
 #of course this aren't all supported architectures but the most common and most supported among desktops, expand later
 qemumachinetypes={ "arm" : "arm", "i686" :  "i386", "x86_64" : "x86_64", "mips" :  "mips", "mips64" :  "mips64"}
 
-qemuoptions=" -cpu host -smp 4 -usb -soundhw sb16 -device virtio-net-pci,vlan=0,id=eth0 -net user -vga std -machine accel=kvm,kernel_irqchip=on -m 1024"
+qemuoptions=" -cpu host -smp 4 -usb -soundhw sb16 -device virtio-net-pci,vlan=0,id=eth0 -net user -no-frame -full-screen -vga vmware -machine accel=kvm,kernel_irqchip=on -m 1024"
 def execQemu():
 	qemuoptions2=""
 	if not ("disk1" in config_parsed or "cdrom" in config_parsed):
 		print("Error: no valid boot disk found")
 		exit(1)
-		
-	if "disk1" in config_parsed and config_parsed["disk1"]!='':
-			qemuoptions2+="-hda "+parsePath("disk1")+" "
-	if "disk2" in config_parsed and config_parsed["disk2"]!='':
-			qemuoptions2+="-hdb "+parsePath("disk2")+" "
+
 	if "cdrom" in config_parsed and config_parsed["cdrom"]!='':
-		qemuoptions2+="-cdrom "+parsePath("cdrom")+" "
-	else:
-		if "disk3" in config_parsed and config_parsed["disk3"]!='':
-			qemuoptions2+="-hdc "+parsePath("disk3")+" "
+		qemuoptions2+="-drive file="+parsePath("cdrom")+",index=0,media=cdrom "		
+	if "disk1" in config_parsed and config_parsed["disk1"]!='':
+			qemuoptions2+="-drive file="+parsePath("disk1")+",index=1,media=disk "
+	if "disk2" in config_parsed and config_parsed["disk2"]!='':
+			qemuoptions2+="-drive file="+parsePath("disk2")+",index=2,media=disk "
+
+        if "disk3" in config_parsed and config_parsed["disk3"]!='':
+                qemuoptions2+="-drive file="+parsePath("disk3")+",index=3,media=disk "
 	if hostdrive!="":
-		qemuoptions2+="-hdd "+hostdrive+" "
+		qemuoptions2+="-drive file="+hostdrive+",index=4,media=disk "
 	return qemupath+"-"+qemumachinetypes[config_parsed["system_environment"]].strip()+" "+qemuoptions2.strip()+" "+qemuoptions.strip()+" "+sanitizeinput(useropts.strip())
 	
 	
@@ -194,15 +203,14 @@ def execVirtualBox():
 	virtualboxoptions2=""
 	print("VirtualBox: not implemented yet, maybe never except I find a hack to execute an extern file without importing it but very low priority 'cause I dislike fancy stuffed, walled gardens")
 	exit(1)
-	if "disk1" in config_parsed and config_parsed["disk1"]!='':
-			virtualboxoptions2+="-hda "+parsePath("disk1")+" "
-	if "disk2" in config_parsed and config_parsed["disk2"]!='':
-			virtualboxoptions2+="-hdb "+parsePath("disk2")+" "
 	if "cdrom" in config_parsed and config_parsed["cdrom"]!='':
-		virtualboxoptions2+="-cdrom "+parsePath("cdrom")+" "
-	else:
-		if "disk3" in config_parsed and config_parsed["disk3"]!='':
-			virtualboxoptions2+="-hdc "+parsePath("disk3")+" "
+		virtualboxoptions2+="--drive file="+parsePath("cdrom")+",index=0,media=cdrom "
+	if "disk1" in config_parsed and config_parsed["disk1"]!='':
+			virtualboxoptions2+="--drive file="+parsePath("disk1")+",index=1,media=disk "
+	if "disk2" in config_parsed and config_parsed["disk2"]!='':
+			virtualboxoptions2+="--drive file="+parsePath("disk2")+",index=2,media=disk "
+        if "disk3" in config_parsed and config_parsed["disk3"]!='':
+			virtualboxoptions2+="--drive file="+parsePath("disk3")+",index=3,media=disk "
 	if hostdrive!="":
 		virtualboxoptions2+="-hdd "+hostdrive+" "
 	return virtualboxpath+"-"+qemumachinetypes[config_parsed["system_environment"]].strip()+" "+virtualboxoptions2.strip()+" "+virtualboxoptions.strip()+" "+sanitizeinput(useropts.strip())
@@ -224,6 +232,7 @@ def parseVirt():
 	os.system(temp)
 
 if action=="start":
+	os.chdir(os.path.dirname(configpath))
 	createPID()
 	execute_before()
 	parseVirt() #atexit handler active so calling destroyPID isn't needed
@@ -234,7 +243,7 @@ elif action=="stop":
 		temptpidfile_handle=open(pidfilepath,"rt")
 		killpid=temptpidfile_handle.readline().strip()
 		temptpidfile_handle.close()
-		os.system("pkill -TERM -P "+killpid)  #atexit handler active so calling destroyPID isn't needed
+		os.system("pkill -KILL -P "+killpid)  #atexit handler active so calling destroyPID isn't needed
 		exit(0)
 	
 else:

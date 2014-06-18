@@ -6,6 +6,7 @@ if [ "$#" != "2" ]; then
   exit 1
 fi
 
+#xinit --
 
 DISPLAY=:0 /usr/bin/runmysys.py "$1" "$2/runmysys.ini"  #doesn't work because I don't find anything about this
 
